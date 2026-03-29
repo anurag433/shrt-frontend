@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "agale";
+  src: url("./assets/fonts/agale.otf") format("opentype");
+}
