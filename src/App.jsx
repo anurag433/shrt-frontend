@@ -11,36 +11,43 @@ function App() {
   const [shortUrl, setShortUrl] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const isValidUrl = (url) => {
-    try {
-      new URL(url);
-      return true;
-    } catch {
-      return false;
+ const isValidUrl = (url) => {
+  try {
+    
+    if (!url.startsWith("http")) {
+      url = "https://" + url;
     }
-  };
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+};
   
-  const handleSubmit = async () => {
-    if (!isValidUrl(url)) {
-      setShortUrl("") ;
-      toast.error("Invalid URL");
-      return;
-    }
-    try {
-      const response = await axios.post(
-        "/urls/",
-        {
-          original_url: url,
-        }
-      );
+const handleSubmit = async () => {
+  let finalUrl = url;
 
-      setShortUrl(response.data.short_url);
+  if (!finalUrl.startsWith("http")) {
+    finalUrl = "https://" + finalUrl;
+  }
 
-    } catch (error) {
-      console.error("Error:", error);
-      toast.error("Something went wrong!");
-    }
-  };
+  if (!isValidUrl(finalUrl)) {
+    setShortUrl("");
+    toast.error("Invalid URL");
+    return;
+  }
+
+  try {
+    const response = await axios.post("/urls/", {
+      original_url: finalUrl,
+    });
+
+    setShortUrl(response.data.short_url);
+  } catch (error) {
+    console.error("Error:", error);
+    toast.error("Something went wrong!");
+  }
+};
 
   return (
     <div className='min-h-screen bg-gradient-to-br from-[#D5EFFB] via-[#E6E9FA] to-[#BBB7C3]'>
