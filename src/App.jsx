@@ -4,6 +4,7 @@ import Card from './component/Card'
 import axios from './api/axios'
 import { Toaster } from "react-hot-toast";
 import toast from "react-hot-toast";
+import Loader from './component/Loader';
 
 function App() {
 
@@ -37,6 +38,8 @@ const handleSubmit = async () => {
     return;
   }
 
+  setLoading(true);
+
   try {
     const response = await axios.post("/urls/", {
       original_url: finalUrl,
@@ -46,11 +49,14 @@ const handleSubmit = async () => {
   } catch (error) {
     console.error("Error:", error);
     toast.error("Something went wrong!");
+  }finally {
+    setLoading(false); 
   }
 };
 
   return (
     <div className='min-h-screen bg-gradient-to-br from-[#D5EFFB] via-[#E6E9FA] to-[#BBB7C3]'>
+      {loading && <Loader />}
       <Toaster position="top-center" />
       <Navbar/>
       <div className='flex justify-center items-center px-4 min-h-[70vh]'>
