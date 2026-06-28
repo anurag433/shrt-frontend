@@ -41,13 +41,17 @@ const handleSubmit = async () => {
   setLoading(true);
 
   try {
-    const response = await axios.post("/urls/", {
+    const response = await axios.post("/urls", {
       original_url: finalUrl,
     });
 
     setShortUrl(response.data.short_url);
   } catch (error) {
+    console.log(error);
+    console.log(error.response);
+    console.log(error.message);
     console.error("Error:", error);
+
     toast.error("Something went wrong!");
   }finally {
     setLoading(false); 
@@ -63,6 +67,7 @@ const handleSubmit = async () => {
         <Card
           url={url}
           setUrl={setUrl}
+          setShortUrl={setShortUrl}
           handleSubmit={handleSubmit}
           shortUrl={shortUrl}
           loading ={loading}
