@@ -1,80 +1,92 @@
-import React , {useState} from 'react'
-import Navbar from './component/Navbar'
-import Card from './component/Card'
-import axios from './api/axios'
+import React, { useState } from "react";
+import Navbar from "./component/Navbar";
+import axios from "./api/axios";
 import { Toaster } from "react-hot-toast";
 import toast from "react-hot-toast";
-import Loader from './component/Loader';
+import Loader from "./component/Loader";
+import Hero from "./component/Hero";
 
 function App() {
-
   const [url, setUrl] = useState("");
   const [shortUrl, setShortUrl] = useState("");
   const [loading, setLoading] = useState(false);
 
- const isValidUrl = (url) => {
-  try {
-    
-    if (!url.startsWith("http")) {
-      url = "https://" + url;
+  const isValidUrl = (value) => {
+    try {
+      let normalized = value;
+      if (!normalized.startsWith("http")) {
+        normalized = "https://" + normalized;
+      }
+      new URL(normalized);
+      return true;
+    } catch {
+      return false;
     }
-    new URL(url);
-    return true;
-  } catch {
-    return false;
-  }
-};
-  
-const handleSubmit = async () => {
-  let finalUrl = url;
+  };
 
-  if (!finalUrl.startsWith("http")) {
-    finalUrl = "https://" + finalUrl;
-  }
+  const handleSubmit = async () => {
+    let finalUrl = url.trim();
+    if (!finalUrl) {
+      toast.error("Please enter a URL");
+      return;
+    }
 
-  if (!isValidUrl(finalUrl)) {
-    setShortUrl("");
-    toast.error("Invalid URL");
-    return;
-  }
+    if (!finalUrl.startsWith("http")) {
+      finalUrl = "https://" + finalUrl;
+    }
 
-  setLoading(true);
+    if (!isValidUrl(finalUrl)) {
+      setShortUrl("");
+      toast.error("Invalid URL");
+      return;
+    }
 
-  try {
-    const response = await axios.post("/urls", {
-      original_url: finalUrl,
-    });
+    setLoading(true);
 
-    setShortUrl(response.data.short_url);
-  } catch (error) {
-    console.log(error);
-    console.log(error.response);
-    console.log(error.message);
-    console.error("Error:", error);
-
-    toast.error("Something went wrong!");
-  }finally {
-    setLoading(false); 
-  }
-};
+    try {
+      const response = await axios.post("/urls/", {
+        original_url: finalUrl,
+      });
+      setShortUrl(response.data.short_url || "");
+      toast.success("Link shortened successfully");
+    } catch (error) {
+      toast.error("Something went wrong!");
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-[#D5EFFB] via-[#E6E9FA] to-[#BBB7C3]'>
+    <div className="min-h-screen relative text-slate-900 bg-[#F9FAFC]">
+      <div 
+        className="fixed inset-0 z-0 pointer-events-none"
+        style={{
+          backgroundImage: `
+            radial-gradient(circle at 75% 25%, rgba(68, 126, 255, 0.08) 0%, rgba(255, 255, 255, 0) 60%),
+            radial-gradient(circle at 65% 55%, rgba(162, 57, 243, 0.1) 0%, rgba(255, 255, 255, 0) 70%)
+          `,
+          backgroundSize: 'cover',
+          backgroundRepeat: 'no-repeat'
+        }}
+      />
+
       {loading && <Loader />}
       <Toaster position="top-center" />
-      <Navbar/>
-      <div className='flex justify-center items-center px-4 min-h-[70vh]'>
-        <Card
-          url={url}
-          setUrl={setUrl}
-          setShortUrl={setShortUrl}
-          handleSubmit={handleSubmit}
-          shortUrl={shortUrl}
-          loading ={loading}
-        />
+      
+      <div className="relative z-10">
+        <Navbar />
+        <main className="px-4 py-6 sm:px-6 lg:px-8">
+          <Hero
+            url={url}
+            setUrl={setUrl}
+            handleSubmit={handleSubmit}
+            shortUrl={shortUrl}
+          />
+        </main>
       </div>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
