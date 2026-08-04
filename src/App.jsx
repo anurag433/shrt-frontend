@@ -5,11 +5,15 @@ import { Toaster } from "react-hot-toast";
 import toast from "react-hot-toast";
 import Loader from "./component/Loader";
 import Hero from "./component/Hero";
+import Result from "./component/Result"; 
 
 function App() {
   const [url, setUrl] = useState("");
   const [shortUrl, setShortUrl] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const [submittedUrl, setSubmittedUrl] = useState(""); 
+  const [stats, setStats] = useState(null);
 
   const isValidUrl = (value) => {
     try {
@@ -22,6 +26,12 @@ function App() {
     } catch {
       return false;
     }
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "Never";
+    const date = new Date(dateString + 'T00:00:00');
+    return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
   };
 
   const handleSubmit = async () => {
@@ -44,17 +54,35 @@ function App() {
     setLoading(true);
 
     try {
-      const response = await axios.post("/urls/", {
+      const response = await axios.post("urls/", {
         original_url: finalUrl,
       });
-      setShortUrl(response.data.short_url || "");
+      
+      const data = response.data;
+      
+      setShortUrl(data.short_url || "");
+      setSubmittedUrl(finalUrl); 
+
+      setStats({
+        clicks: data.clicks || 0,
+        createdOn: formatDate(data.created_at),
+        expiresOn: formatDate(data.expiry_date),
+      });
+
       toast.success("Link shortened successfully");
     } catch (error) {
-      toast.error("Something went wrong!");
+      toast.error("Something went wrong !");
       console.error(error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const resetApp = () => {
+    setUrl("");
+    setShortUrl("");
+    setSubmittedUrl("");
+    setStats(null);
   };
 
   return (
@@ -77,12 +105,20 @@ function App() {
       <div className="relative z-10">
         <Navbar />
         <main className="px-4 py-6 sm:px-6 lg:px-8">
-          <Hero
-            url={url}
-            setUrl={setUrl}
-            handleSubmit={handleSubmit}
-            shortUrl={shortUrl}
-          />
+          {!shortUrl ? (
+            <Hero
+              url={url}
+              setUrl={setUrl}
+              handleSubmit={handleSubmit}
+            />
+          ) : (
+            <Result 
+              originalUrl={submittedUrl}
+              shortUrl={shortUrl}
+              stats={stats}
+              resetApp={resetApp}
+            />
+          )}
         </main>
       </div>
     </div>

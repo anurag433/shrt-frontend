@@ -14,7 +14,7 @@ export default function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-50  backdrop-blur-md ">
+    <header className="sticky top-0 z-50 backdrop-blur-md ">
       <div className="max-w-7xl mx-auto h-20 flex items-center justify-between px-6 lg:px-9">
         
         <div className="flex items-center">
@@ -34,7 +34,7 @@ export default function Navbar() {
               ${
                 index === 0
                   ? "text-[#5855F4]"
-                  : "text-[#5e5e6d] hover:text-[#32264C]"
+                  : "text-[#7E7E8C] hover:text-[#32264C]"
               }`}
             >
               {item}
@@ -44,7 +44,6 @@ export default function Navbar() {
             </a>
           ))}
         </nav>
-
         <div className="hidden lg:flex">
           <button className="px-7 py-2.5 rounded-full text-white font-semibold bg-[#5855F4] hover:bg-[#4F46E5] shadow-md shadow-[#5855F4]/20 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5">
             Sign In
@@ -58,7 +57,7 @@ export default function Navbar() {
           {open ? <X size={26} strokeWidth={2.5} /> : <Menu size={26} strokeWidth={2.5} />}
         </button>
       </div>
-
+      
       {open && (
         <div className="lg:hidden bg-white border-t border-gray-100 absolute w-full shadow-xl">
           <div className="flex flex-col py-2">
