@@ -12,7 +12,7 @@ export default function Hero({
 
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-9 pt-8 lg:pt-8">
-      <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
         <div>
           <h1 className="text-[42px] sm:text-[52px] lg:text-[64px] leading-[1.1] font-extrabold text-[#32264C] tracking-tight">
             Shorten Links,
@@ -33,9 +33,9 @@ export default function Hero({
               e.preventDefault();
               handleSubmit();
             }}
-            className="mt-10 max-w-xl"
-          >
-            <div className="bg-white/80 backdrop-blur-xl border border-white/60 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-2 flex flex-col sm:flex-row gap-2">
+            className="mt-10 max-w-xl">
+
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-2 flex flex-col sm:flex-row gap-2">
               <input
                 type="text"
                 value={url}
@@ -47,16 +47,16 @@ export default function Hero({
                   }
                 }}
                 placeholder="Paste your long URL here..."
-                className="flex-1 h-14 bg-transparent px-5 outline-none text-base sm:text-lg text-gray-700 placeholder:text-gray-400"
+                className="w-full sm:flex-1 h-12 sm:h-14 px-4 text-base outline-none bg-transparent"
               />
 
               <button
                 type="submit"
                 disabled={isInputEmpty || loading}
-                className={`h-14 px-8 rounded-xl font-semibold flex items-center justify-center gap-2 text-white transition-all duration-300 w-full sm:w-auto ${
-                  isInputEmpty || loading
-                    ? "bg-[#9CB5F4] cursor-not-allowed"
-                    : "bg-[#5855F4] hover:bg-[#4F46E5]"
+                className={`h-12 sm:h-14 w-full sm:w-auto px-8 rounded-xl font-semibold flex items-center justify-center gap-2 text-white transition ${
+                   isInputEmpty || loading
+                       ? "bg-[#9CB5F4]"
+                       : "bg-[#5855F4] hover:bg-[#4F46E5]"
                 }`}
               >
                 {loading ? (
@@ -81,7 +81,7 @@ export default function Hero({
         </div>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mt-16 lg:mt-20 pt-8 border-t border-gray-200/60">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mt-12 lg:mt-20 pt-8 border-t border-gray-200/60">
         <Feature
           icon={<Zap size={22} />}
           title="Lightning Fast"
