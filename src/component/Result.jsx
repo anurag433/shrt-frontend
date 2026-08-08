@@ -34,6 +34,59 @@ export default function Result({
     }
   };
 
+const shareTwitter = () => {
+  const text = "Check out this link!";
+  const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+    text
+  )}&url=${encodeURIComponent(shortUrl)}`;
+
+  window.open(url, "_blank", "noopener,noreferrer");
+};
+
+const shareFacebook = () => {
+  const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+    shortUrl
+  )}`;
+
+  window.open(url, "_blank", "noopener,noreferrer");
+};
+
+const shareLinkedIn = () => {
+  const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+    shortUrl
+  )}`;
+
+  window.open(url, "_blank", "noopener,noreferrer");
+};
+
+
+const shareWhatsApp = () => {
+  const message = `Check out this link: ${shortUrl}`;
+
+  const url = `https://wa.me/?text=${encodeURIComponent(message)}`;
+
+  window.open(url, "_blank", "noopener,noreferrer");
+};
+
+const shareNative = async () => {
+  if (!navigator.share) {
+    await copyToClipboard(shortUrl);
+    toast.success("Link copied! Sharing is not supported on this browser.");
+    return;
+  }
+
+  try {
+    await navigator.share({
+      title: "Short Link",
+      text: "Check out this link!",
+      url: shortUrl,
+    });
+  } catch (error) {
+    if (error.name !== "AbortError") {
+      toast.error("Unable to share link");
+    }
+  }
+};
   return (
     <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-5">
 
@@ -157,23 +210,33 @@ export default function Result({
             icon={<FaTwitter />}
             bg="bg-sky-100"
             color="text-sky-500"
+            onClick={shareTwitter}
+            title="Share on Twitter"
           />
           <SocialButton
             icon={<FaFacebookF />}
             bg="bg-blue-100"
             color="text-blue-600"
+            onClick={shareFacebook}
+            title="Share on Facebook"
           />
           <SocialButton
             icon={<FaLinkedinIn />}
             bg="bg-cyan-100"
             color="text-cyan-700"
+            onClick={shareLinkedIn}
+            title="Share on LinkedIn"
           />
           <SocialButton
             icon={<FaWhatsapp />}
             bg="bg-green-100"
             color="text-green-600"
+            onClick={shareWhatsApp}
+            title="Share on WhatsApp"
           />
-          <button className="px-5 h-10 border border-gray-200 rounded-full text-sm font-medium hover:bg-gray-50">
+          <button
+            onClick={shareNative}
+            className="px-5 h-10 border border-gray-200 rounded-full text-sm font-medium hover:bg-gray-50 transition">
             More
           </button>
         </div>
@@ -207,10 +270,20 @@ function StatCard({ icon, title, value }) {
   );
 }
 
-function SocialButton({ icon, bg, color }) {
+function SocialButton({
+  icon,
+  bg,
+  color,
+  onClick,
+  title,
+}) {
   return (
     <button
-      className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 ${bg} ${color}`}
+      type="button"
+      onClick={onClick}
+      title={title}
+      aria-label={title}
+      className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 ${bg} ${color}`}
     >
       {icon}
     </button>
